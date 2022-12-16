@@ -1,0 +1,10 @@
+<launch>
+  <!-- Socket can to initiate communication with the motor -->
+  <node name="socketcan" pkg="socketcan_bridge" type="socketcan_bridge_node" />
+  
+  <!-- Package to talk to the motor with name motor_"number" via socket can -->
+  <node name="motor_1" pkg="motor_testbench" type="motor_test.py" output="screen"/>
+  
+  <!-- Package to control the motor -->
+  <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
+</launch>

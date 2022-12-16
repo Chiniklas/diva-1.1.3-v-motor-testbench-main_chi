@@ -1,0 +1,12 @@
+<library path="src">
+  <class name="ControlCenter" type="control_center.ControlCenter" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      An interface to control the T-motors based robots
+    </description>
+    <qtgui>
+      <label>Control Center</label>
+      <icon type="theme">system-help</icon>
+      <statustip>An interface to control the T-motors based robots</statustip>
+    </qtgui>
+  </class>
+</library>
