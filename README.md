@@ -9,21 +9,20 @@ Supervisor: Akhil Sathuluri
 
 ## Introduction
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This is a software infrastructure for testing the DIVA robot using AK-series motors with an inbuild MIT Mini-Cheetah controller. 
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+We use ROS noetic as the control interface and socket CAN as communication media. A GUI has been established with the PyQt tool to realize the motor connection, feedback monitoring, and command transmission. Several rostopics (e.g. /motor_command and /motor_state) are also available to set the states of the motors and transfer position, velocity, and torque command to the motor. A rostopic called can_response is also ready to read the feedback from the embedded encoder of the motor through the CAN bus.
 
 ## Environment
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Software:
+- ROS noetic
+- Python 3.8.10
+- Socket CAN
 
-```
-cd existing_repo
-git remote add origin https://gitlab.lrz.de/lpl-tum/diva/diva-1/diva-1.1.3-v/diva-1.1.3-v-motor-testbench.git
-git branch -M main
-git push -uf origin main
-```
+Hardware:
+- Tmotor AK series motor, e.g. AK60, AK80, AK10
+
 
 ## Current Progress
 
