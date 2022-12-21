@@ -28,25 +28,25 @@ Hardware:
 
 - low level message sending and receiving through CAN bus 
 
-pack & unpack --done
+    - pack & unpack --done
     
 - low level state command sending 
 
-enable, disable, setZero --done
+    - enable, disable, setZero --done
 
 - low level control command sending 
 
-position, velocity, torque, Kp, Kd --done
+    - position, velocity, torque, Kp, Kd --done
 
 - trajectory generation and tracking (for position control) 
 
-linear interpolation and cubic interpolation --done
+    - linear interpolation and cubic interpolation --done
 
 - position, velocity and torque control accuracy check (with external sensors)
 
-position control check - error is a sine wave in 360 degrees
+    - position control check - error is a sine wave in 360 degrees
 
-velocity control check - slightly lower than the set velocity
+    - velocity control check - slightly lower than the set velocity
 
 ## Work in the future
 
@@ -57,6 +57,16 @@ velocity control check - slightly lower than the set velocity
 
 ## Contribution
 - Akhil Sathuluri (Project supervisor)
+    - GUI design
+    - CAN communication setup
+    - low level position & velocity control
+    - trajectory generation & tracking
+    
 - LPL mechanical team (DIVA platform construction)
+
 - Chi Zhang (Developer)
+    - low level torque control
+    - code testing
+    - testbench CAD design
+    - position, velocity and torque control accuracy check (with external sensors)
 
