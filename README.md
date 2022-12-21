@@ -30,6 +30,8 @@ Software:
 Hardware:
 - Tmotor AK series motor, e.g. AK60, AK80, AK10
 - One 3D-printed testbench to hold the AK series motor
+- 24V power supply
+- CAN cable
 
 ## Current Progress
 
