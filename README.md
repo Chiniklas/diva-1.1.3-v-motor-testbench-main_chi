@@ -22,17 +22,37 @@ Software:
 
 Hardware:
 - Tmotor AK series motor, e.g. AK60, AK80, AK10
-
+- One 3D-printed testbench to hold the AK series motor
 
 ## Current Progress
 
-- [ ] [Set up project integrations](https://gitlab.lrz.de/lpl-tum/diva/diva-1/diva-1.1.3-v/diva-1.1.3-v-motor-testbench/-/settings/integrations)
+- low level message sending and receiving through CAN bus 
+
+pack & unpack --done
+    
+- low level state command sending 
+
+enable, disable, setZero --done
+
+- low level control command sending 
+
+position, velocity, torque, Kp, Kd --done
+
+- trajectory generation and tracking (for position control) 
+
+linear interpolation and cubic interpolation --done
+
+- position, velocity and torque control accuracy check (with external sensors)
+
+position control check - error is a sine wave in 360 degrees
+
+velocity control check - slightly lower than the set velocity
 
 ## Work in the future
 
 - measure backlash and improve the control accuracy
 - Solve the problem of the gravitational drag (affects the control accuracy)
-- implement teach-playback function
+- implement teach-playback feature
 - RL learning
 
 ## Contribution
