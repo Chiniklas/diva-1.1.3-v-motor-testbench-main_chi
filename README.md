@@ -64,6 +64,17 @@ Hardware:
 - implement teach-playback feature
 - RL learning
 
+## Documentation
+- from the manufacturer:
+    - AK60-6: https://store.tmotor.com/goods.php?id=1138
+    - AK80-9: https://store.tmotor.com/goods.php?id=982
+    - AK10-9: https://store.tmotor.com/goods.php?id=1188
+
+- useful videos:
+    - https://www.youtube.com/watch?v=hbqQCgebaF8&list=LL&index=7
+    - https://www.youtube.com/watch?v=HzY9vzgPZkA&list=LL&index=20
+    - https://www.youtube.com/watch?v=WKRLlthr9kY&list=LL&index=11
+ 
 ## Contribution
 - Akhil Sathuluri (Project supervisor)
     - GUI design
