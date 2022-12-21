@@ -13,6 +13,13 @@ This is a software infrastructure for testing the DIVA robot using AK-series mot
 
 We use ROS noetic as the control interface and socket CAN as communication media. A GUI has been established with the PyQt tool to realize the motor connection, feedback monitoring, and command transmission. Several rostopics (e.g. /motor_command and /motor_state) are also available to set the states of the motors and transfer position, velocity, and torque command to the motor. A rostopic called can_response is also ready to read the feedback from the embedded encoder of the motor through the CAN bus.
 
+A 3D-printed testbench for AK60 has been build to enable position, velocity and torque measurement. Extensions for dummy external sensors are made possible.
+
+![96a18d4371097de3a39c24e1d93f4a3](https://user-images.githubusercontent.com/92475185/208930091-be37e68b-dff0-48b7-9391-5dd91e9d114c.png)
+
+![461cda189bff3e5d5bf7098b15d19fb](https://user-images.githubusercontent.com/92475185/208930174-4dfce609-5faf-437a-b336-bd9ec2d5edb9.jpg)
+
+
 ## Environment
 
 Software:
