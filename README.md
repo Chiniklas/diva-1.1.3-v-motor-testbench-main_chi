@@ -47,15 +47,15 @@ Hardware:
 
     - position, velocity, torque, Kp, Kd --done
 
-- trajectory generation and tracking (for position control) 
+- trajectory generation and tracking (for position & velocity control) 
 
     - linear interpolation and cubic interpolation --done
 
-- position, velocity and torque control accuracy check (with external sensors)
+- position, velocity and torque control accuracy check (with external sensors) -- done
 
-    - position control check - error is a sine wave in 360 degrees
+    - position control check - error is a sine wave in 360 degrees -- could be the result of gravity and backlash
 
-    - velocity control check - slightly lower than the set velocity
+    - velocity control check - slightly lower than the set velocity -- maybe mechanical friction being too large
 
 ## Work in the future
 
@@ -85,8 +85,9 @@ Hardware:
 - LPL mechanical team (DIVA platform construction)
 
 - Chi Zhang (Developer)
-    - low level torque control
-    - code testing
+    - realize low level torque control
+    - code testing and debugging
     - testbench CAD design
     - position, velocity and torque control accuracy check (with external sensors)
+    - rewrite low-level control(CAN communication, posititon & velocity & torque control as well as trajectory planning & execution) for the new version of AK series motors.
 
