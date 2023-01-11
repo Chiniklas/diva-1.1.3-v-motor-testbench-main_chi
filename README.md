@@ -3,7 +3,7 @@ Technische Universität München
 
 Laboratory for Product Development and Lightweight Design
 
-Hiwi job: 01.11.2022 - 15.01.2023
+Hiwi job: 15.11.2022 - 15.01.2023
 
 Supervisor: Akhil Sathuluri
 
