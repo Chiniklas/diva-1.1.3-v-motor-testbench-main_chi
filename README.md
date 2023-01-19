@@ -3,7 +3,7 @@ Technische Universität München
 
 Laboratory for Product Development and Lightweight Design
 
-Hiwi job: 15.11.2022 - 15.01.2023
+Hiwi job: 01.11.2022 - 31.12.2022
 
 Supervisor: Akhil Sathuluri
 
@@ -47,15 +47,15 @@ Hardware:
 
     - position, velocity, torque, Kp, Kd --done
 
-- trajectory generation and tracking (for position & velocity control) 
+- trajectory generation and tracking (for position control) 
 
     - linear interpolation and cubic interpolation --done
 
-- position, velocity and torque control accuracy check (with external sensors) -- done
+- position, velocity and torque control accuracy check (with external sensors)
 
-    - position control check - error is a sine wave in 360 degrees -- could be the result of gravity and backlash
+    - position control check - error is a sine wave in 360 degrees
 
-    - velocity control check - slightly lower than the set velocity -- maybe mechanical friction being too large
+    - velocity control check - slightly lower than the set velocity
 
 ## Work in the future
 
@@ -85,9 +85,8 @@ Hardware:
 - LPL mechanical team (DIVA platform construction)
 
 - Chi Zhang (Developer)
-    - realize low level torque control
-    - code testing and debugging
+    - low level torque control
+    - code testing
     - testbench CAD design
     - position, velocity and torque control accuracy check (with external sensors)
-    - rewrite low-level control(CAN communication, posititon & velocity & torque control as well as trajectory planning & execution) for the new version of AK series motors.
 

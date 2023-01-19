@@ -9,6 +9,12 @@ import numpy as np
 import csv
 
 def exit_gracefully(signum, frame):
+    """
+    This function enables a Ctrl+C interruption during running.
+    :param signum: pass
+    :param frame: pass
+    :return: none
+    """
     signal.signal(signal.SIGINT, original_sigint)
 
     sys.exit(1)
@@ -16,7 +22,13 @@ def exit_gracefully(signum, frame):
     signal.signal(signal.SIGINT, exit_gracefully)
 
 class motor_commander:
+    """
+    This function is a control infrastructure based on basic CAN communication written in motor_test.py
+    """
     def __init__(self):
+        """
+        Initialization
+        """
         rospy.init_node('motor_commander', anonymous = True)
         self.motorIDs = [1]
         self.robot_joint_state = np.zeros(len(self.motorIDs))
@@ -43,10 +55,21 @@ class motor_commander:
                 pass
 
     def joint_state_callback(self, data, id):
+        """
+        This function updates motor position data.
+        :param data: incoming motor data
+        :param id: motor id
+        :return: none
+        """
         if id == 1:
             self.robot_joint_state[0] = data.position
 
     def armMotor(self, idx):
+        """
+        This function arms the motor.
+        :param idx: motor ID
+        :return: none
+        """
         cmd = tmotor_cmd()
         cmd.status = True
         # self.pub_states[idx].publish(cmd)
@@ -63,6 +86,11 @@ class motor_commander:
         time.sleep(0.3)
 
     def setZero(self, idx):
+        """
+        This function sets the current motor position as zero position.
+        :param idx: motor ID
+        :return: none
+        """
         cmd = tmotor_cmd()
         cmd.status = True
         cmd.setzero = True
@@ -77,6 +105,11 @@ class motor_commander:
         self.pub_commands[idx].publish(cmd)
 
     def disarmMotor(self, idx):
+        """
+        This function disarms the motor.
+        :param idx: motor ID
+        :return: none
+        """
         cmd = tmotor_cmd()
         cmd.position = 0
         cmd.velocity = 0
@@ -92,6 +125,14 @@ class motor_commander:
         time.sleep(0.3)
 
     def setAngle(self, idx, angle, kp, kd):
+        """
+        This function only sends angular position data to the motor.
+        :param idx:motor ID
+        :param angle: angle that needs to be set
+        :param kp: proportional factor
+        :param kd: differential factor
+        :return:none
+        """
         # !!! Since the motor command is now a different topic, we
         # might want to use a different mesgs to set the control mode etc.
         cmd = tmotor_cmd()
@@ -109,6 +150,15 @@ class motor_commander:
         
 
     def setCommand(self, idx, angle, velocity, kp, kd):
+        """
+        This function sends position, velocity data to the motor.
+        :param idx: motor ID
+        :param angle: position command
+        :param velocity: velocity command
+        :param kp: proportional factor
+        :param kd: differential factor
+        :return: none
+        """
         # !!! Since the motor command is now a different topic, we
         # might want to use a different mesgs to set the control mode etc.
         cmd = tmotor_cmd()
@@ -124,21 +174,37 @@ class motor_commander:
         self.pub_commands[idx].publish(cmd)
 
     def armAll(self):
+        """
+        This function arms all the motors.
+        :return: none
+        """
         for idx in range(len(self.motorIDs)):
             self.armMotor(idx)
             time.sleep(0.3)
 
     def disarmAll(self):
+        """
+        This function disarms all the motors.
+        :return: none
+        """
         for idx in range(len(self.motorIDs)):
             self.disarmMotor(idx)
             time.sleep(0.3)
 
     def setZeroAll(self):
+        """
+        This function sets current position of all the motors to zero position.
+        :return:
+        """
         for idx in range(len(self.motorIDs)):
             self.setZero(idx)
             time.sleep(0.3)
 
     def holdCurrentPose(self):
+        """
+        This function holds current position for all the motors with very large stiffness.
+        :return: none
+        """
         # First arm all motors to update the joint state
         self.armAll()
         # get the current joint pose of the robot
@@ -151,6 +217,10 @@ class motor_commander:
             time.sleep(0.3)
 
     def readCurrentPassivePositions(self):
+        """
+        This function disarms the motor twice and read the current joint states.
+        :return:none
+        """
         # disarm twice to update the current joint position
         self.disarmAll()
         self.disarmAll()
@@ -158,11 +228,39 @@ class motor_commander:
         rospy.loginfo("{}".format(self.robot_joint_state))
         print(self.robot_joint_state)
 
+    def setTorque(self,idx, torque):
+        """
+        This function only sends torque command to the motor.
+        :param idx: motor ID
+        :param torque: torque command
+        :return: none
+        """
+        # torque control
+        if abs(torque) > 3:
+            self.disarmMotor(idx)
+            rospy.loginfo('set torque exceeds safety')
+        else:
+            cmd = tmotor_cmd()
+            cmd.status = True
+            cmd.setzero = False
+            cmd.position = 0
+            cmd.velocity = 0
+            cmd.torque = torque
+            cmd.kp = 0 
+            cmd.kd = 0 
+            self.pub_commands[idx].publish(cmd)
+        
 
 # Class for interpolating positions and velocities
 # Inherits the motor_commander class to send commands
 class trajTracker(motor_commander):
+    """
+    This function is for trajectory planning and tracking.
+    """
     def __init__(self):
+        """
+        initialization
+        """
         # initate the motor_commander
         super().__init__()
         # in seconds
@@ -185,6 +283,13 @@ class trajTracker(motor_commander):
 
     # Pass t0 when the loop started and tc the current time
     def get_ref_pos(self, t0, tc):
+        """
+        This function calculates the difference between current state and reference state.
+        It is for feedback control.
+        :param t0: start time
+        :param tc: current time
+        :return: theta,dtheta
+        """
         tn = tc-t0
         if self.interpolation_method == "linear":
             theta = self.qi*(1-tn/self.tf)+self.qd*tn/self.tf
@@ -211,6 +316,10 @@ class trajTracker(motor_commander):
             pass
 
     def compute_cc(self):
+        """
+        This function generates factors for cubic interpolation.
+        :return: cubic interpolation factors
+        """
         self.cc[0] = (-2*(self.qd-self.qi)-self.tf*(self.vd+self.vi))/self.tf**3
         self.cc[1] = -(-3*(self.qd-self.qi)+self.tf*(self.vd+2*self.vi))/self.tf**2
         self.cc[2] = self.vi
@@ -218,6 +327,11 @@ class trajTracker(motor_commander):
 
     # Generate the required trajectory from the save values and dt value
     def generate_trajectory(self, N):
+        """
+        This function generates a series of command of position and velocity.
+        :param N: number of steps
+        :return: lists of position and velocity commands
+        """
         t_list = np.linspace(self.t0, self.tf, N)
         pos_list = []
         vel_list = []
@@ -250,6 +364,10 @@ class trajTracker(motor_commander):
 
 
     def track_trajectory(self):
+        """
+        This function executes the list of position and velocity command generated from generate_trajectory(self,N)
+        :return: none
+        """
         # Read current time
         self.t0 = time.time()
         tc = time.time()-self.t0

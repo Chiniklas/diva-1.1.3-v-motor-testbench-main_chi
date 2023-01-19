@@ -1,0 +1,21 @@
+actions: []
+authors: ''
+brief: ''
+bugtracker: ''
+depends:
+- catkin
+- message_runtime
+- rospy
+- roscpp
+- std_msgs
+- message_generation
+description: The motor_testbench package
+license: TODO
+maintainers: laniakea <laniakea@todo.todo>
+msgs:
+- tmotor_cmd
+- tmotor_data
+package_type: package
+repo_url: ''
+srvs: []
+url: ''

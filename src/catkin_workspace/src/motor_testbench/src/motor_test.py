@@ -12,11 +12,26 @@ import sys
 
 # !!! Need to clarify this
 def exit_gracefully(signum, frame):
+    """
+    This function enables a Ctrl+C interruption during running.
+    :param signum: pass
+    :param frame: pass
+    :return: none
+    """
     signal.signal(signal.SIGINT, original_sigint)
     sys.exit(1)
     signal.signal(signal.SIGINT, exit_gracefully)
 
 def float_to_uint(x_float, x_min, x_max, bits):
+    """
+    This function maps float data from the range of [x_min,x_max] to [0,bits]
+    for CAN communication.
+    :param x_float: float data needs to be mapped.
+    :param x_min: min value for float value
+    :param x_max: max value for float value
+    :param bits: max value for uint value
+    :return: mapped uint value
+    """
     span = x_max-x_min
     # Set software limits for the demanded variables
     if x_float<x_min:
@@ -28,6 +43,14 @@ def float_to_uint(x_float, x_min, x_max, bits):
 
 
 def uint_to_float(x_int, x_min, x_max, bits):
+    """
+    This function maps uint data from [0,bits] to [x_min,x_max].
+    :param x_int: uint data needs to be mapped
+    :param x_min: min value for float value
+    :param x_max: max value for float value
+    :param bits: max value for uint value
+    :return: mapped float value
+    """
     span = x_max-x_min
     return float((span/bits)*x_int+x_min)
 # -------------------------------
@@ -39,7 +62,14 @@ import math
 import json
 
 class motor_testbench:
+    """
+    This class is the low-level control of the AK-series motors.
+    """
     def __init__(self):
+        """
+        This init value sets up ros subscriber and publisher. It also sets basic motor parameters
+        and limits on pos,vel,tau,kp,kd.
+        """
         # Setting up the main node
         rospy.init_node('motor_testbench')
         # Read the motorID from the node name
@@ -140,6 +170,12 @@ class motor_testbench:
         #==================================
         
     def motor_state_callback(self, data):
+        """
+        This function is the callback function upon receiving "motor_state" data.
+        motor_state only change the states.(enable, setZero)
+        :param data: incoming motor_state command
+        :return: none
+        """
         msg = Frame()
         msg.id = self.motorID
         msg.is_rtr = False
@@ -147,7 +183,9 @@ class motor_testbench:
         msg.is_error = False
         msg.dlc = 8
 
+        # set up a signal to let me know that motor_state data is received
         rospy.loginfo('received motor_state data')
+
         # Use status to arm or disarm the motors
         if data.status == True:
             if data.setzero == False:
@@ -181,6 +219,12 @@ class motor_testbench:
     # Motor state callback is now differentiated from motor data callback
     # This way, the state variables can be safely ignored when commands are passed
     def motor_command_callback(self, data):
+        """
+        This function is the callback function of the "motor_command" data.
+        motor_command does not affect the states.(enable, setZero)
+        :param data: incoming motor_command data
+        :return:none
+        """
         cmd = Frame()
         cmd.id = self.motorID
         cmd.is_rtr = False
@@ -232,6 +276,13 @@ class motor_testbench:
             self.can_command.publish(cmd)
 
     def can_msgrecv(self, data):
+        """
+        This function parses the incoming CAN msg into position,velocity and tau information.
+        Then it publishes the (pos,vel,tau) information through can_response channel.
+        This function is used as current state monitoring.
+        :param data: incoming uint16 CAN msg
+        :return: msg through can_response channel
+        """
         # rospy.loginfo('in can msg recv')
         info = data.data
         # Check if the message recieved is for the corresponding motorID
@@ -258,7 +309,8 @@ class motor_testbench:
             # !!! Need to check it in running
             tau_bits = float((info[4] & 0x0F)<<8|info[5])
             # tau_nm = (((self.max_tau-self.min_tau)/(self.max_tau_bits))*tau_bits+self.min_tau)*self.Kt
-            tau_nm = uint_to_float(tau_bits, self.min_tau, self.max_tau, self.max_tau_bits)*self.Kt*self.gear_ratio
+            # tau_nm = uint_to_float(tau_bits, self.min_tau, self.max_tau, self.max_tau_bits)*self.Kt*self.gear_ratio
+            tau_nm = uint_to_float(tau_bits, self.min_tau, self.max_tau, self.max_tau_bits)
             msg.torque = tau_nm
 
             self.can_response.publish(msg)
@@ -267,6 +319,10 @@ class motor_testbench:
     # We need to constantly publish something to get the info from the motor
     # def ping_motor(self, data=[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]):
     def ping_motor(self):
+        """
+        This function is a test to send data through can_command channel.
+        :return:
+        """
         msg = Frame()
         msg.id = self.motorID
         # Since this frame is just to request the data
@@ -278,6 +334,10 @@ class motor_testbench:
         self.can_command.publish(msg)
 
     def disarmMotor(self):
+        """
+        This function disarms the motor.
+        :return:none
+        """
         msg = Frame()
         msg.id = self.motorID
         msg.is_rtr = False
